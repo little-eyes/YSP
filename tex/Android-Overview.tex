@@ -1,0 +1,54 @@
+\documentclass[10pt, letterpaper]{article}
+
+\usepackage{amsmath}
+\usepackage{bbding}
+\usepackage[margin=1in]{geometry}
+
+\begin{document}
+
+\title{Android Overview}
+\author{Jilong Liao}
+\maketitle
+
+\section{About the Operating System}
+Android is an open source operating system which is free and contributed by tons of developers in the world. You can download the source code, change it and recompile your Android for free.
+
+The operating system is a suite of software interact between the user and hardware. So the user does not need to take care of the hardware complicated things but focus on using and enjoying the system.
+
+In order to develop the application on top of any operating system, including Android. A \emph{Software Development Kit}(SDK) is provided which abstracts many low level details into a single elegant interface. In our case, we will use Android SDK intensively. The SDK documentation is a very good content on the Android web site.
+
+\section{Application Fundamentals}
+The Android application framework is complicated, but the there are only several key concepts we need to understand. 
+
+\subsection{App Concept}
+\begin{itemize}
+\item \textbf{Activity.} An activity represents a single screen with a user interface. For instance, the facebook login screen on your Android phone is an activity. Activity is always running visibly which means it will be suspended if it other activity occupy the screen. Why? Because there is only one screen.
+
+\item \textbf{Service.} A Service is component running in the background. So a service does not need to appear or be known by the user. You can go to the system settings to check the current running services. It does not occupy the screen, so it is always running. A typical example is the music player: the music continues when you lock your screen.
+
+\item \textbf{Content Provider.} The place to store application or system related data. It works like a database which manages all the data in a single place. It is useful to store some user preference in this place, for instance, a user's account to login facebook. When the app needs the data, it can query the content provider to get it.
+
+\item \textbf{Broadcast Receiver.} If the Activity and the Service needs to talk with each other, they can broadcast an Intent, then the receiver can filter the Intent out. To put it simple, Broadcast Receiver is a type of message exchange channel between Activities and Services. A downloading status bar may be implemented by using Broadcast Receiver.
+\end{itemize}
+
+\subsection{The Manifest File}
+When you have a clear idea of the app you want to build, the next step is to design the app. For instance, you want to know how many different screens are needed, what is the order of the screens, and what contents should you put on each screen?
+
+The you need to write the Manifest file, which is a simple XML file. You define all the requirements for the app in this XML file, then the build system will build the app based on your design. You can define the application components this way:
+
+\begin{itemize}
+\item \textless activity\textgreater elements for Activity.
+\item \textless service\textgreater elements for Service.
+\item \textless receiver\textgreater elements for Broadcast Receiver.
+\item \textless provider\textgreater elements for Content Provider.
+\end{itemize}
+
+\subsection{Further Readings}
+\begin{itemize}
+\item[\Checkmark] http://developer.android.com/guide/components/fundamentals.html
+\item[\Checkmark] http://developer.android.com/guide/components/activities.html
+\item[\Checkmark] http://developer.android.com/guide/components/services.html
+\item[\Checkmark] http://developer.android.com/guide/topics/providers/content-providers.html
+\end{itemize}
+
+\end{document}
