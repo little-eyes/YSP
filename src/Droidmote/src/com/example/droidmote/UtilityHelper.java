@@ -1,16 +1,24 @@
 package com.example.droidmote;
 
 import java.util.ArrayList;
-
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 
 public class UtilityHelper 
 {
+	private static Context m_AppEnvironment;
+	public UtilityHelper(Context AppEnvironment) {
+		m_AppEnvironment = AppEnvironment;
+	}
 	/*
 	 * Call this function to start a new activity.
 	 * */
 	public void startActivity(IconMetaData metadata) {
-		
+		String packageName = metadata.getPackageName();
+		Intent intent = m_AppEnvironment.getPackageManager().getLaunchIntentForPackage(packageName);
+		m_AppEnvironment.startActivity(intent);
 	}
 	
 	/*
@@ -25,6 +33,10 @@ public class UtilityHelper
 	 * */
 	public Drawable getAppIcon(IconMetaData metaData) {
 		
+		return null;
+	}
+	
+	public ArrayList<String> getAppList() {
 		return null;
 	}
 }
