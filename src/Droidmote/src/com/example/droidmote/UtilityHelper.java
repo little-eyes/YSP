@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 
 public class UtilityHelper 
@@ -36,7 +38,9 @@ public class UtilityHelper
 		return null;
 	}
 	
-	public ArrayList<String> getAppList() {
-		return null;
+	public ArrayList<ApplicationInfo> getAppList() {
+		final PackageManager pm = m_AppEnvironment.getPackageManager();
+		ArrayList<ApplicationInfo> packages = (ArrayList<ApplicationInfo>) pm.getInstalledApplications(PackageManager.GET_META_DATA);
+		return packages;
 	}
 }
