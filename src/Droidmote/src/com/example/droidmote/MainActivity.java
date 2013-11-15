@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.pm.ApplicationInfo;
+import android.graphics.drawable.Drawable;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ImageButton;
@@ -20,7 +21,8 @@ public class MainActivity extends Activity
 	private AlertDialog.Builder m_AlterBuilder = null;
 	private ArrayList <ImageButton> m_ImageButtonList = null;
 	private ArrayList <ApplicationInfo> m_ApplicationInfoList = null;
-	private ArrayList <CharSequence> m_ApplicationNameList = null;
+	private ArrayList <String> m_ApplicationNameList = null;
+	private static String[] m_ApplicationNameArray = null;
 	private static int m_cellId = 0;
 	private static int m_AppIndex = 0;
 
@@ -53,6 +55,9 @@ public class MainActivity extends Activity
 	private void initIconMetaDataList() 
 	{
 		m_IconMetaDataList = new ArrayList<IconMetaData>();
+		m_ApplicationInfoList = new ArrayList<ApplicationInfo>();
+		m_ApplicationInfoList = m_UtilityHelper.getAppList();
+		m_ApplicationNameList = new ArrayList<String>();
 		loadIconMetaData();
 	}
 	
@@ -128,6 +133,15 @@ public class MainActivity extends Activity
 		m_ImageButtonList.add(ib4);
 		m_ImageButtonList.add(ib5);
 		m_ImageButtonList.add(ib6);
+		for (int i = 0; i < m_IconMetaDataList.size(); i++)
+		{
+			try
+			{
+				Drawable icon = this.getPackageManager().getApplicationIcon(m_IconMetaDataList.get(i).getPackageName());
+				m_ImageButtonList.get(i).setBackground(icon);
+			}
+			catch (Exception e){}
+		}
 		for (ImageButton ib: m_ImageButtonList)
 			
 		ib.setOnClickListener(new View.OnClickListener() {
@@ -144,13 +158,13 @@ public class MainActivity extends Activity
 					}
 					
 				}
-				if (m_IconMetaDataList.get(cellId).getCellState() != 0)
+				if (m_IconMetaDataList.size() == 0)
+					m_AlterBuilder.show();
+				else if (m_IconMetaDataList.get(cellId).getCellState() != 0)
 					m_UtilityHelper.startActivity(m_IconMetaDataList.get(cellId));
 				else {
 					m_AlterBuilder.show();
 				}
-						
-				// pop the alter builder if the 
 			}
 		});
 	}
@@ -206,8 +220,8 @@ public class MainActivity extends Activity
 		m_AlterBuilder = new AlertDialog.Builder(this);
 		for (ApplicationInfo app: m_ApplicationInfoList)
 			m_ApplicationNameList.add(app.name);
-		final CharSequence[] items = (CharSequence[]) m_ApplicationNameList.toArray();
-		m_AlterBuilder.setTitle("Choose an app").setItems(items, new DialogInterface.OnClickListener() {
+		m_ApplicationNameArray = m_ApplicationNameList.toArray(new String[m_ApplicationNameList.size()]);
+		m_AlterBuilder.setTitle("Choose an app").setItems(m_ApplicationNameArray, new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int index) {
