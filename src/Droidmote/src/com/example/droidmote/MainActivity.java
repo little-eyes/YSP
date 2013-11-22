@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.pm.ApplicationInfo;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ImageButton;
@@ -78,48 +79,54 @@ public class MainActivity extends Activity
 			}
 			int index = 0;
 			
-			do 
+			int counter = 0;
+			while ((line = buffReader.readLine()) != null)
 			{
-				line = buffReader.readLine();
+				counter++;
+				//line = buffReader.readLine();
 				String [] data = line.split("=");
-				if (data[0] == "index ")
+				if (data[0].equals("index"))
 				{
 					index = Integer.valueOf(data[1]);
 					m_IconMetaDataList.get(index).setCellIndex(index);
 				}
-				else if (data[0] == "app name ")
+				else if (data[0].equals("app name"))
 				{
-					m_IconMetaDataList.get(index).setAppName(data[1].substring(1));
+					m_IconMetaDataList.get(index).setAppName(data[1]);
 				}
-				else if (data[0] == "cell state ")
+				else if (data[0].equals("cell state"))
 				{
-					m_IconMetaDataList.get(index).setCellState(Integer.valueOf(data[1].substring(1)));
+					m_IconMetaDataList.get(index).setCellState(Integer.valueOf(data[1]));
 				}
-				else if (data[0] == "icon path ")
+				else if (data[0].equals("icon path"))
 				{
-					m_IconMetaDataList.get(index).setAppIconPath(data[1].substring(1));
+					m_IconMetaDataList.get(index).setAppIconPath(data[1]);
 				}
-				else if (data[0] == "main activity ")
+				else if (data[0].equals("main activity"))
 				{
-					m_IconMetaDataList.get(index).setAppMainActivity(data[1].substring(1));
+					m_IconMetaDataList.get(index).setAppMainActivity(data[1]);
 				}
-				else if (data[0] == "package name ")
+				else if (data[0].equals("package name"))
 				{
-					m_IconMetaDataList.get(index).setPackageName(data[1].substring(1));
+					m_IconMetaDataList.get(index).setPackageName(data[1]);
 				}
-				else if (data[0] == "class name ")
+				else if (data[0].equals("class name"))
 				{
-					m_IconMetaDataList.get(index).setClassName(data[1].substring(1));
+					m_IconMetaDataList.get(index).setClassName(data[1]);
 				}
-			} while (line != null);
+			}
+			Log.d("debug", String.valueOf(counter));
 			buffReader.close();
 		}
-		catch (Exception e){
+		catch (Exception e){}
+		if (m_IconMetaDataList.size() == 0)
+		{
 			for (int i = 0; i < 6; i++)
 			{
 				m_IconMetaDataList.add(new IconMetaData());
 			}
 		}
+			
 	}
 	
 	// create all the image button list.
@@ -143,7 +150,7 @@ public class MainActivity extends Activity
 			try
 			{
 				Drawable icon = this.getPackageManager().getApplicationIcon(m_IconMetaDataList.get(i).getPackageName());
-				m_ImageButtonList.get(i).setBackground(icon);
+				m_ImageButtonList.get(i).setImageDrawable(icon);
 			}
 			catch (Exception e){}
 		}
@@ -188,7 +195,7 @@ public class MainActivity extends Activity
 		FileOutputStream fos = null;
 		try 
 		{
-			fos = new FileOutputStream(F, true);
+			fos = new FileOutputStream(F, false);
 		}
 		catch (Exception e){}
 		int index = 0;
@@ -196,22 +203,23 @@ public class MainActivity extends Activity
 		{
 			try
 			{
-			fos.write(("index = " + String.valueOf(index)).getBytes());
+			fos.write(("index=" + String.valueOf(index)).getBytes());
 			fos.write(("\n").getBytes());
-			fos.write(("app name = " + meta.getAppName()).getBytes());
+			fos.write(("app name=" + meta.getAppName()).getBytes());
 			fos.write(("\n").getBytes());
-			fos.write(("cell state = " + String.valueOf(meta.getCellState())).getBytes());
+			fos.write(("cell state=" + String.valueOf(meta.getCellState())).getBytes());
 			fos.write(("\n").getBytes());
-			fos.write(("icon path = " + meta.getAppIconPath()).getBytes());
+			fos.write(("icon path=" + meta.getAppIconPath()).getBytes());
 			fos.write(("\n").getBytes());
-			fos.write(("main activity = " + meta.getAppMainActivity()).getBytes());
+			fos.write(("main activity=" + meta.getAppMainActivity()).getBytes());
 			fos.write(("\n").getBytes());
-			fos.write(("package name = " + meta.getPackageName()).getBytes());
+			fos.write(("package name=" + meta.getPackageName()).getBytes());
 			fos.write(("\n").getBytes());
-			fos.write(("class name = " + meta.getClassName()).getBytes());
+			fos.write(("class name=" + meta.getClassName()).getBytes());
 			fos.write(("\n").getBytes());
 			}
 			catch (Exception e){}
+			index++;
 		}
 		try
 		{
@@ -248,6 +256,15 @@ public class MainActivity extends Activity
 					metaData.setCellIndex(m_cellId);
 					metaData.setCellState(1);
 					m_IconMetaDataList.set(m_cellId, metaData);
+					try
+					{
+						Drawable icon = getPackageManager().getApplicationIcon(m_IconMetaDataList.get(m_cellId).getPackageName());
+						m_ImageButtonList.get(m_cellId).setImageDrawable(icon);
+					}
+					catch (Exception e){}
+					
+					saveMetaDataList();
+					
 					dialog.dismiss();
 				}}).setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
 
