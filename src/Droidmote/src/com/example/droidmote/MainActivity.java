@@ -16,12 +16,12 @@ import android.widget.ImageButton;
 
 public class MainActivity extends Activity
 {
-	private ArrayList <IconMetaData> m_IconMetaDataList = null;
+	private static ArrayList <IconMetaData> m_IconMetaDataList = null;
 	private UtilityHelper m_UtilityHelper = null;
 	private AlertDialog.Builder m_AlterBuilder = null;
-	private ArrayList <ImageButton> m_ImageButtonList = null;
-	private ArrayList <ApplicationInfo> m_ApplicationInfoList = null;
-	private ArrayList <String> m_ApplicationNameList = null;
+	private static ArrayList <ImageButton> m_ImageButtonList = null;
+	private static ArrayList <ApplicationInfo> m_ApplicationInfoList = null;
+	private static ArrayList <String> m_ApplicationNameList = null;
 	private static String[] m_ApplicationNameArray = null;
 	private static int m_cellId = 0;
 	private static int m_AppIndex = 0;
@@ -114,7 +114,12 @@ public class MainActivity extends Activity
 			} while (line != null);
 			buffReader.close();
 		}
-		catch (Exception e){}
+		catch (Exception e){
+			for (int i = 0; i < 6; i++)
+			{
+				m_IconMetaDataList.add(new IconMetaData());
+			}
+		}
 	}
 	
 	// create all the image button list.
@@ -219,9 +224,14 @@ public class MainActivity extends Activity
 	private void createAlterBuilder() {
 		m_AlterBuilder = new AlertDialog.Builder(this);
 		for (ApplicationInfo app: m_ApplicationInfoList)
-			m_ApplicationNameList.add(app.name);
+		{
+			String tname = "N/A";
+			if (app.processName != null)
+				tname = app.processName;
+			m_ApplicationNameList.add(tname);
+		}
 		m_ApplicationNameArray = m_ApplicationNameList.toArray(new String[m_ApplicationNameList.size()]);
-		m_AlterBuilder.setTitle("Choose an app").setItems(m_ApplicationNameArray, new DialogInterface.OnClickListener() {
+		m_AlterBuilder.setTitle("Choose an app").setSingleChoiceItems(m_ApplicationNameArray, 0, new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int index) {
